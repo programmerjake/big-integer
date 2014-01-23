@@ -2498,17 +2498,10 @@ private:
         if(!is)
             return false;
         if(v.sign() < 0 || v >= k.getMaxInput())
-            return false;
+            throw new runtime_error("v is out of range");
         v = k.decrypt(v);
         v >>= paddingLength * 8;
-        try
-        {
-            buffer = v.convertToASCII();
-        }
-        catch(exception * e)
-        {
-            return false;
-        }
+        buffer = v.convertToASCII();
         return buffer.length() > 0;
     }
 public:
@@ -2913,8 +2906,8 @@ int main(int argc, char ** argv)
         {
             if(argc >= 3 && string(argv[2]) == "generate")
             {
-                ptrdiff_t bits = 256;
-                if(string(argv[3]).length() > 0)
+                ptrdiff_t bits = 1024;
+                if(argc > 3 && string(argv[3]).length() > 0)
                 {
                     istringstream is;
                     is.str(argv[3]);
@@ -2986,7 +2979,7 @@ int main(int argc, char ** argv)
         }
         catch(exception * e)
         {
-            cout << "error : " << e->what() << endl;
+            cerr << "error : " << e->what() << endl;
             return 1;
         }
         return 0;
